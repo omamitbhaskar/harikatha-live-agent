@@ -1,0 +1,175 @@
+{
+  "source": {
+    "title": "We are the cause of Our Problems",
+    "speaker": "Srila Bhaktivedanta Narayana Goswami Maharaja",
+    "language": "English",
+    "date": "Unknown",
+    "duration_seconds": 296,
+    "filename": "we_are_the_cause_of_our_problems.mp3",
+    "tags": ["saranagati", "surrender", "problems", "krishna-nama", "kali-yuga", "haridas-thakur", "lakshmi"]
+  },
+  "segments": [
+    {
+      "id": "seg_001",
+      "start_time": "0:00",
+      "end_time": "1:03",
+      "transcript": "So, and now I am hearing so many from the mouth of devotees, oh there are so many problems. My wife has left me. Now my children's house, like orphan. So many problems. Some lady devotees coming, oh, very big problem. My husband has left me. I have nothing to do, what should I do? Can you help? So many problems, so many problems. They try to this, do this, that, but everywhere fail, everywhere fail. Because the root of all these problems is that you are not Sarnagar. You have no relation with Krishna and you have no trust in Krishna, no belief in Krishna and his name. That is all problems coming.",
+      "topics": ["problems in devotee life", "root cause of suffering", "lack of surrender", "saranagati"],
+      "key_concepts": ["saranagati", "trust in Krishna", "krishna-nama"]
+    },
+    {
+      "id": "seg_002",
+      "start_time": "1:07",
+      "end_time": "1:52",
+      "transcript": "Krishna has not advised you that, oh, you are brahmachari for 13, 14, 20 years in math of Swamiji, your profile. You are so merciful and he engaged. Has he told that you should go and marry? Krishna has advised you that make a boyfriend or girlfriend? Has he told? Who brought all these problems? Myself. Yourself only. You made problems all. If you are like this always serving Krishna and depending on Krishna, any problem cannot come.",
+      "topics": ["self-created problems", "deviation from bhakti", "depending on Krishna"],
+      "key_concepts": ["self-responsibility", "krishna-dependence", "brahmachari"]
+    },
+    {
+      "id": "seg_003",
+      "start_time": "1:52",
+      "end_time": "2:41",
+      "transcript": "Can any problem come for Shukadeva Goswami? Any problem for Nath Goswami? Always depending on Krishna. So anyone, we are also dependent on Krishna. That is why no problem at all. To whom we touch, problems go. What is the meaning of touching? If you want to touch, then you should try to follow from today that Krishna Supreme Personality of Godhead, he has created whole world and he is supporting nothing whole. Then why he cannot support you and nourish you? Why problems? It is that you are making all problems. You are the root cause of all problems.",
+      "topics": ["examples of surrendered souls", "Shukadeva Goswami", "depending on Krishna", "Krishna as maintainer"],
+      "key_concepts": ["shukadeva-goswami", "sanatan-goswami", "krishna-as-maintainer", "self-caused-suffering"]
+    },
+    {
+      "id": "seg_004",
+      "start_time": "2:44",
+      "end_time": "3:45",
+      "transcript": "Krishna wants to take you out of problems, but you are making. There was one nation, they were not satisfied, again two daughters, one son, again more and they become some, matured they were and they were deadly against you and you, her mother. Making so many problems now. So for this you should be Saranawada. Name is more merciful than Krishna you should know. More, more, more merciful. Krishna had invested his all mercy, power, opulence, everything, his mercy in Krishna name, but you are neglecting. You are depending on your own job and making some money and this making money making more problems. Problems after problems after problems.",
+      "topics": ["krishna-nama more merciful than Krishna", "material dependence vs spiritual dependence", "saranagati"],
+      "key_concepts": ["krishna-nama", "nama-more-merciful", "material-attachment", "saranagati"]
+    },
+    {
+      "id": "seg_005",
+      "start_time": "3:45",
+      "end_time": "4:56",
+      "transcript": "You can realize all these things. Because Shastra has told all these things. You cannot be happy by this, solving all these problems. Only one problem is in the root of all work, you have forgotten Krishna. You are neglecting Krishna. Krishna name, especially Krishna name in this Kali Yuga. Chant like Haridas Thakur and you will see that Lakshmi will come and follow you. Oh how can I serve you? Have you this faith? We have this faith and that is why Lakshmi is always with us. But we told that wait a little, I have no service. Please be very far away. We also fear from the shadow of Lakshmi Devi. What to tell Lakshmi Devi? You should be like that and you will see all very, very good, very good. No problem at all, no problem at all. Krishna will quickly solve all the problems.",
+      "topics": ["forgotten Krishna as root problem", "Haridas Thakur example", "Lakshmi follows devotees", "faith in krishna-nama", "kali-yuga"],
+      "key_concepts": ["haridas-thakur", "lakshmi-devi", "krishna-nama-in-kali-yuga", "faith"]
+    }
+  ],
+  "qa_pairs": [
+    {
+      "id": "qa_001",
+      "natural_questions": [
+        "Why do I have so many problems in life?",
+        "What is the root cause of all my suffering?",
+        "Why am I always failing despite trying everything?",
+        "Why does nothing work out for me?"
+      ],
+      "answer_segment": "seg_001",
+      "answer_timestamp": "0:51 - 1:03",
+      "answer_summary": "The root of all problems is lack of saranagati (surrender). No relation with Krishna, no trust in Krishna, no belief in Krishna and His name."
+    },
+    {
+      "id": "qa_002",
+      "natural_questions": [
+        "Who is responsible for my problems?",
+        "Did Krishna cause my suffering?",
+        "Why did God give me these difficulties?",
+        "Is karma responsible for my problems?"
+      ],
+      "answer_segment": "seg_002",
+      "answer_timestamp": "1:07 - 1:52",
+      "answer_summary": "You yourself are the cause. Krishna never advised you to deviate from devotional service. If you always serve Krishna and depend on Him, no problem can come."
+    },
+    {
+      "id": "qa_003",
+      "natural_questions": [
+        "Can a devotee really be free from all problems?",
+        "Did great saints have problems?",
+        "How were the Goswamis free from suffering?",
+        "Is it really possible to live without problems?"
+      ],
+      "answer_segment": "seg_003",
+      "answer_timestamp": "1:52 - 2:41",
+      "answer_summary": "Shukadeva Goswami and Sanatan Goswami had no problems because they always depended on Krishna. Krishna created and supports the whole world — He can certainly support you."
+    },
+    {
+      "id": "qa_004",
+      "natural_questions": [
+        "Is Krishna's name more powerful than Krishna Himself?",
+        "Why should I chant the Holy Name?",
+        "How is nama more merciful than Krishna?",
+        "Why is chanting important?"
+      ],
+      "answer_segment": "seg_004",
+      "answer_timestamp": "3:13 - 3:45",
+      "answer_summary": "Krishna's name is more merciful than Krishna Himself. Krishna invested all His mercy, power, opulence — everything — into His name. But we neglect it and depend on material means instead."
+    },
+    {
+      "id": "qa_005",
+      "natural_questions": [
+        "How can I solve all my problems?",
+        "What is the solution to suffering in Kali Yuga?",
+        "How do I become free from all difficulties?",
+        "What should I do to overcome my troubles?"
+      ],
+      "answer_segment": "seg_005",
+      "answer_timestamp": "3:54 - 4:56",
+      "answer_summary": "The one root problem is forgetting Krishna. Chant like Haridas Thakur and Lakshmi herself will come to serve you. Have faith in Krishna nama, especially in Kali Yuga, and Krishna will quickly solve all problems."
+    },
+    {
+      "id": "qa_006",
+      "natural_questions": [
+        "What is saranagati?",
+        "What does it mean to surrender to Krishna?",
+        "How do I surrender to God?",
+        "What does taking shelter mean?"
+      ],
+      "answer_segment": "seg_001",
+      "answer_timestamp": "0:51 - 1:52",
+      "answer_summary": "Saranagati means having a real relation with Krishna, trusting Him completely, believing in His name, and depending fully on Him rather than material arrangements. Without this, all problems persist."
+    },
+    {
+      "id": "qa_007",
+      "natural_questions": [
+        "What is the example of Haridas Thakur?",
+        "How did Haridas Thakur chant?",
+        "What can we learn from Haridas Thakur?",
+        "Tell me about Haridas Thakur and chanting"
+      ],
+      "answer_segment": "seg_005",
+      "answer_timestamp": "4:07 - 4:51",
+      "answer_summary": "Chant like Haridas Thakur with full faith. When you do, Lakshmi Devi will come and ask how she can serve you. The truly surrendered devotees even tell Lakshmi to stay away — they have no need for material wealth."
+    },
+    {
+      "id": "qa_008",
+      "natural_questions": [
+        "Why do devotees still face problems?",
+        "I am chanting but still have difficulties",
+        "Why is bhakti not solving my problems?",
+        "I am a devotee but life is still hard"
+      ],
+      "answer_segment": "seg_002",
+      "answer_timestamp": "1:07 - 2:41",
+      "answer_summary": "The problems come from not fully depending on Krishna. If we deviate from pure service — pursuing material relationships, money, comfort — problems follow. The Goswamis who fully depended on Krishna had zero problems."
+    },
+    {
+      "id": "qa_009",
+      "natural_questions": [
+        "Can money solve my problems?",
+        "Should I focus on earning more to fix my life?",
+        "Will a better job solve my difficulties?",
+        "Is financial security the answer?"
+      ],
+      "answer_segment": "seg_004",
+      "answer_timestamp": "3:33 - 3:45",
+      "answer_summary": "Depending on your own job and making money creates more problems, not fewer. Problems after problems after problems. The solution is surrender to Krishna nama, not material accumulation."
+    },
+    {
+      "id": "qa_010",
+      "natural_questions": [
+        "Does Krishna want to help me?",
+        "Does God care about my problems?",
+        "Will Krishna help me if I surrender?",
+        "Is Krishna willing to solve my difficulties?"
+      ],
+      "answer_segment": "seg_003",
+      "answer_timestamp": "2:44 - 2:51",
+      "answer_summary": "Krishna wants to take you out of problems. He actively desires to help you. But you keep creating new problems through material attachment. Stop making problems, surrender, and Krishna will act."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+# Environment
+.env
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Media files (stored in Cloud Storage, not git)
+corpus/media/*.mp4
+corpus/media/*.mp3
+corpus/media/*.wav
+corpus/media/*.avi
+corpus/media/*.mkv
+
+# Docker
+.dockerignore
+
+# Google Cloud
+service-account-key.json
+*-credentials.json
+
+# Test outputs
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Build
+dist/
+build/
+*.egg-info/
