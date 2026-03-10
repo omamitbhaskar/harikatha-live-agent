@@ -30,11 +30,8 @@ EMBEDDING_MODEL = "models/gemini-embedding-001"
 FIRESTORE_COLLECTION = "harikatha_segments"
 QA_COLLECTION = "harikatha_qa"
 
-# GCS base URL for audio files
-GCS_AUDIO_BASE = os.environ.get(
-    "GCS_AUDIO_BASE",
-    f"https://storage.googleapis.com/{GCP_PROJECT}-corpus"
-)
+# Audio file URL — served from /static/ (the MP3 in frontend/ folder)
+DEFAULT_AUDIO_URL = "/static/we_are_the_cause_of_our_problems.mp3"
 
 # ── Firestore + GenAI clients ────────────────────────────────────────
 db = None
@@ -86,11 +83,6 @@ def cosine_similarity(a: list[float], b: list[float]) -> float:
     return dot / (mag_a * mag_b)
 
 
-# ── Audio file URL — served from /static/ ────────────────────────────
-# The MP3 must be in the frontend/ folder so StaticFiles can serve it.
-DEFAULT_AUDIO_URL = "/static/we_are_the_cause_of_our_problems.mp3"
-
-
 def parse_time_to_seconds(time_str: str) -> int:
     """Parse '1:07' or '0:51 - 1:03' into seconds. Returns start seconds."""
     if not time_str:
@@ -115,8 +107,6 @@ def search_harikatha(query: str, top_k: int = 3) -> list[dict]:
     Returns top_k matches with score, transcript, timestamps, audio_url.
     """
     query_embedding = embed_query(query)
-
-    # Search QA pairs first (higher quality matches)
     results = []
 
     # 1. Search QA collection
@@ -127,7 +117,6 @@ def search_harikatha(query: str, top_k: int = 3) -> list[dict]:
             if "embedding" in data and data["embedding"]:
                 score = cosine_similarity(query_embedding, data["embedding"])
                 if score > 0.65:
-                    # Parse timestamp from answer_timestamp field
                     ts = data.get("answer_timestamp", "")
                     start_sec = parse_time_to_seconds(ts)
                     results.append({
@@ -135,7 +124,7 @@ def search_harikatha(query: str, top_k: int = 3) -> list[dict]:
                         "score": round(score, 4),
                         "question": data.get("question", ""),
                         "answer_timestamp": ts,
-                        "source_title": data.get("source_title", "We are the cause of Our Problems"),
+                        "source_title": data.get("source_title", "") or "We are the cause of Our Problems",
                         "audio_url": data.get("audio_url", "") or DEFAULT_AUDIO_URL,
                         "transcript": data.get("answer_text", data.get("answer_summary", "")),
                         "start_seconds": data.get("start_seconds", start_sec),
@@ -161,7 +150,7 @@ def search_harikatha(query: str, top_k: int = 3) -> list[dict]:
                         "transcript": data.get("transcript", ""),
                         "start_time": data.get("start_time", ""),
                         "end_time": data.get("end_time", ""),
-                        "source_title": data.get("source_title", "We are the cause of Our Problems"),
+                        "source_title": data.get("source_title", "") or "We are the cause of Our Problems",
                         "audio_url": data.get("audio_url", "") or DEFAULT_AUDIO_URL,
                         "start_seconds": data.get("start_seconds", start_sec),
                         "end_seconds": data.get("end_seconds", end_sec),
@@ -202,7 +191,16 @@ async def api_search(q: str = Query(..., description="Search query")):
 
 
 # ── Gemini Live API system instructions ──────────────────────────────
-SYSTEM_INSTRUCTION = """You help seekers hear Srila Gurudeva's harikatha. When asked a question, call search_harikatha immediately. After getting results, say ONLY ONE sentence like "Gurudeva speaks about this in [title]. Here are his words." Then stop. Say NOTHING else. Do NOT explain the results. Do NOT share your reasoning. Do NOT plan out loud. Just the one sentence, then stop. If no results, say "I could not find a matching recording." Keep it extremely brief."""
+SYSTEM_INSTRUCTION = """You are a humble spiritual assistant serving seekers of Srila Bhaktivedanta Narayana Goswami Maharaja's harikatha.
+
+Rules:
+- When a seeker asks a spiritual question, immediately call the search_harikatha tool.
+- After receiving results, give a SHORT 2-sentence introduction: mention the lecture title and what Gurudeva teaches. Then say "Now playing Gurudeva's words."
+- NEVER share your internal reasoning or planning. Just respond naturally.
+- Attribute all teachings to "Gurudeva" or "Srila Gurudeva."
+- If no results found, humbly say so and offer brief guidance.
+- Be warm, concise, devotional. Use "Hare Krishna" as greeting.
+- NEVER give long explanations. The seeker wants Gurudeva's voice, not yours."""
 
 
 # ── Tool declaration for Gemini Live API ─────────────────────────────
@@ -229,15 +227,6 @@ SEARCH_TOOL = {
 async def websocket_live_proxy(ws: WebSocket):
     """
     WebSocket proxy between browser and Gemini Live API.
-
-    Flow:
-    1. Browser connects to /ws/live
-    2. We open a WebSocket to Gemini Live API
-    3. We forward audio from browser → Gemini
-    4. We listen for Gemini responses → forward to browser
-    5. When Gemini issues a toolCall (search_harikatha), we execute it
-       server-side and send the result back to Gemini, plus notify browser
-       with the audio segment URL to play.
     """
     await ws.accept()
     logger.info("🎙️ Browser connected to /ws/live")
@@ -267,7 +256,7 @@ async def websocket_live_proxy(ws: WebSocket):
                         "speechConfig": {
                             "voiceConfig": {
                                 "prebuiltVoiceConfig": {
-                                    "voiceName": "Kore"
+                                    "voiceName": "Puck"
                                 }
                             }
                         }

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harikatha Live — As It Is</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <!-- ── Background decoration ── -->
+    <div class="bg-decoration">
+        <div class="lotus-glow"></div>
+    </div>
+
+    <!-- ── Main container ── -->
+    <div class="container">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-mark">ॐ</div>
+            <h1 class="header-title">Harikatha Live</h1>
+            <p class="header-sub">Ask. Listen. Receive Gurudeva's words — as it is.</p>
+        </header>
+
+        <!-- Connection status -->
+        <div class="status-bar" id="statusBar">
+            <span class="status-dot" id="statusDot"></span>
+            <span class="status-text" id="statusText">Ready to connect</span>
+        </div>
+
+        <!-- ── Conversation area ── -->
+        <div class="conversation" id="conversation">
+            <div class="welcome-message">
+                <p>Hare Krishna! 🙏</p>
+                <p>Press the microphone to speak your question,<br>
+                or type below. Gurudeva's own voice will answer.</p>
+            </div>
+        </div>
+
+        <!-- ── Harikatha audio player (shows when segment found) ── -->
+        <div class="harikatha-player" id="harikathaPlayer" style="display:none;">
+            <div class="player-header">
+                <span class="player-icon">🎙️</span>
+                <span class="player-label">Gurudeva's Harikatha</span>
+            </div>
+            <div class="player-title" id="playerTitle"></div>
+            <audio id="harikathaAudio" controls></audio>
+            <div class="player-transcript" id="playerTranscript"></div>
+        </div>
+
+        <!-- ── Controls ── -->
+        <div class="controls">
+            <!-- Text input -->
+            <div class="text-input-row">
+                <input type="text" id="textInput" placeholder="Type your question..."
+                       autocomplete="off" />
+                <button id="sendBtn" class="btn btn-send" title="Send text">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mic button -->
+            <div class="mic-row">
+                <button id="connectBtn" class="btn btn-connect" title="Connect">
+                    Connect
+                </button>
+                <button id="micBtn" class="btn btn-mic" disabled title="Hold to speak">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                        <line x1="12" y1="19" x2="12" y2="23"/>
+                        <line x1="8" y1="23" x2="16" y2="23"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Audio visualiser -->
+        <canvas id="visualiser" width="300" height="60"></canvas>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Built with devotion for the Gemini Live Agent Challenge 2026</p>
+            <p class="footer-attr">Vedantic AI Ltd · Srila Gurudeva's Harikatha Corpus</p>
+        </footer>
+    </div>
+
+    <script src="/static/js/audio-utils.js"></script>
+    <script src="/static/js/gemini-live.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
