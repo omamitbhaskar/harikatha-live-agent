@@ -118,57 +118,61 @@ document.addEventListener("DOMContentLoaded", () => {
         animFrame = requestAnimationFrame(drawVisualiser);
     }
 
-    // ── Play Gurudeva's audio at exact segment ──
+    // ── Play Gurudeva's harikatha — Audio + Video (user chooses) ──
+    // ALGORITHM:
+    //   1. Show player section with title and transcript
+    //   2. Set audio source and seek to start_seconds (like before)
+    //   3. Set video source (derived from audio: .mp3 → _badger_eng_subs.mp4)
+    //   4. Do NOT auto-play — let user click play on audio or video
+    //   5. Both players have controls, both seek to correct timestamp
+    //   6. To revert to auto-play: uncomment the OLD line marked below
     function playHarikathaSegment(result) {
         if (!result || !result.audio_url) return;
 
         const startSec = result.start_seconds || 0;
         const endSec = result.end_seconds || 0;
 
+        // --- Show player section with title and transcript ---
         playerTitle.textContent = result.source_title || "Gurudeva's Harikatha";
         playerTranscript.textContent = result.transcript || "";
-        harikathaAudio.src = result.audio_url;
         harikathaPlayer.style.display = "block";
         conversation.scrollTop = conversation.scrollHeight;
 
+        // --- Clear any previous stop timer ---
         if (segmentStopTimer) {
             clearTimeout(segmentStopTimer);
             segmentStopTimer = null;
         }
 
+        // --- AUDIO: set source and seek to start ---
+        harikathaAudio.src = result.audio_url;
         harikathaAudio.onloadedmetadata = () => {
             harikathaAudio.currentTime = startSec;
-            harikathaAudio.play().then(() => {
-                setStatus("connected", "🎙️ Playing Gurudeva's harikatha...");
-                visualiserActive = true;
-
-                if (endSec > startSec) {
-                    const durationMs = (endSec - startSec) * 1000;
-                    segmentStopTimer = setTimeout(() => {
-                        harikathaAudio.pause();
-                        visualiserActive = false;
-                        setStatus("connected", "Connected — ask another question");
-                        addMessage("system", "Segment complete. Ask another question!");
-                    }, durationMs);
-                }
-            }).catch(e => {
-                console.log("Auto-play blocked:", e);
-                setStatus("connected", "Press ▶ to hear Gurudeva");
-            });
+            // OLD (auto-play): harikathaAudio.play().then(() => { ... });
+            // NEW: user clicks play manually
         };
 
-        harikathaAudio.onpause = () => {
-            visualiserActive = false;
-            if (segmentStopTimer) {
-                clearTimeout(segmentStopTimer);
-                segmentStopTimer = null;
-            }
+        // --- VIDEO: derive URL from audio URL, show and seek ---
+        var harikathaVideo = document.getElementById("harikathaVideo");
+        var videoUrl = result.audio_url.replace('.mp3', '_badger_eng_subs.mp4');
+        harikathaVideo.src = videoUrl;
+        harikathaVideo.style.display = "block";
+        harikathaVideo.onloadedmetadata = () => {
+            harikathaVideo.currentTime = startSec;
+            // No auto-play — user clicks play manually
         };
 
+        // --- When either finishes, update status ---
         harikathaAudio.onended = () => {
             visualiserActive = false;
             setStatus("connected", "Connected — ask another question");
         };
+        harikathaVideo.onended = () => {
+            setStatus("connected", "Connected — ask another question");
+        };
+
+        // --- Tell user both options are ready ---
+        setStatus("connected", "Press ▶ on Audio or Video to hear Gurudeva");
     }
 
     // ── Connect / Disconnect ──
