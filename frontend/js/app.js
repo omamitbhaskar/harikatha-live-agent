@@ -1,11 +1,13 @@
 /**
  * app.js — Harikatha Live Agent
  *
- * Flow: Question → Search → Brief text intro → Gurudeva's voice plays
- * - Gemini's PCM audio is DISCARDED (garbled/not needed)
- * - Gemini's "thinking" text is FILTERED out
- * - Only clean, short agent responses are shown
- * - Gurudeva's audio plays at exact segment timestamps
+ * ANSWER-FIRST ARCHITECTURE:
+ * 1. User asks question (voice or text)
+ * 2. Gemini calls search_harikatha → backend searches Firestore
+ * 3. Text answer appears INSTANTLY (milliseconds) from search results
+ * 4. Video / Audio available as buttons — user clicks to load on demand
+ * 5. Gemini's own audio is DISCARDED (garbled PCM, not needed)
+ * 6. Gemini's "thinking" text is FILTERED out
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -18,9 +20,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const textInput = document.getElementById("textInput");
     const sendBtn = document.getElementById("sendBtn");
     const harikathaPlayer = document.getElementById("harikathaPlayer");
+    const playerQuestion = document.getElementById("playerQuestion");
+    const playerAnswer = document.getElementById("playerAnswer");
     const playerTitle = document.getElementById("playerTitle");
     const harikathaAudio = document.getElementById("harikathaAudio");
-    const playerTranscript = document.getElementById("playerTranscript");
+    const harikathaVideo = document.getElementById("harikathaVideo");
+    const btnLoadVideo = document.getElementById("btnLoadVideo");
+    const btnLoadAudio = document.getElementById("btnLoadAudio");
     const visualiserCanvas = document.getElementById("visualiser");
     const vCtx = visualiserCanvas.getContext("2d");
 
@@ -30,9 +36,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let isRecording = false;
     let agentTextBuffer = "";
     let animFrame = null;
-    let pendingHarikatha = null;
     let segmentStopTimer = null;
     let visualiserActive = false;
+    let currentResult = null;
+
+    // ── Stored timeupdate handlers so we can remove them before re-adding ──
+    let audioTimeUpdateHandler = null;
+    let videoTimeUpdateHandler = null;
 
     // ── Status ──
     function setStatus(state, text) {
@@ -40,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
         statusText.textContent = text;
     }
 
-    // ── Add message ──
+    // ── Add message to conversation ──
     function addMessage(role, text) {
         const welcome = conversation.querySelector(".welcome-message");
         if (welcome) welcome.remove();
@@ -53,45 +63,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ── Filter Gemini's "thinking" text ──
-    // The native audio model leaks its internal reasoning as text.
-    // We detect and remove it so the seeker only sees clean responses.
     function isThinkingText(text) {
         if (!text) return true;
         const lower = text.toLowerCase();
-        // Patterns that indicate internal reasoning, not a real response
         const thinkingPatterns = [
-            "**",               // Markdown bold headers
-            "i'm now",          // "I'm now employing..."
-            "i've initiated",   // "I've initiated a search..."
-            "my aim is",
-            "my plan is",
-            "my next step",
-            "i'll structure",
-            "i'll analyze",
-            "i'll formulate",
-            "i'm preparing",
-            "i'm expanding",
-            "i'm refining",
-            "i'm currently",
-            "i'm employing",
-            "i'm eager",
-            "now awaiting",
-            "after the expanded",
-            "search results may",
-            "search_harikatha",
-            "function calling",
-            "tool call",
+            "**", "i'm now", "i've initiated", "my aim is", "my plan is",
+            "my next step", "i'll structure", "i'll analyze", "i'll formulate",
+            "i'm preparing", "i'm expanding", "i'm refining", "i'm currently",
+            "i'm employing", "i'm eager", "now awaiting", "after the expanded",
+            "search results may", "search_harikatha", "function calling", "tool call",
         ];
         return thinkingPatterns.some(p => lower.includes(p));
     }
 
     function cleanAgentText(text) {
         if (!text) return "";
-        // Remove markdown bold markers
         let cleaned = text.replace(/\*\*[^*]*\*\*/g, "").trim();
-        // Remove multiple spaces/newlines
         cleaned = cleaned.replace(/\s{2,}/g, " ").trim();
-        // If after cleaning it's mostly thinking, return empty
         if (isThinkingText(cleaned)) return "";
         return cleaned;
     }
@@ -118,69 +106,219 @@ document.addEventListener("DOMContentLoaded", () => {
         animFrame = requestAnimationFrame(drawVisualiser);
     }
 
-    // ── Play Gurudeva's harikatha — Audio + Video (user chooses) ──
-    // ALGORITHM:
-    //   1. Show player section with title and transcript
-    //   2. Set audio source and seek to start_seconds (like before)
-    //   3. Set video source (derived from audio: .mp3 → _badger_eng_subs.mp4)
-    //   4. Do NOT auto-play — let user click play on audio or video
-    //   5. Both players have controls, both seek to correct timestamp
-    //   6. To revert to auto-play: uncomment the OLD line marked below
-    function playHarikathaSegment(result) {
-        if (!result || !result.audio_url) return;
+    // ══════════════════════════════════════════════════════════════════
+    // ANSWER-FIRST: Show text answer INSTANTLY when search results arrive
+    // ══════════════════════════════════════════════════════════════════
+    function showAnswerInstantly(result, queryText) {
+        if (!result) return;
 
+        currentResult = result;
         const startSec = result.start_seconds || 0;
         const endSec = result.end_seconds || 0;
 
-        // --- Show player section with title and transcript ---
-        playerTitle.textContent = result.source_title || "Gurudeva's Harikatha";
-        playerTranscript.textContent = result.transcript || "";
-        harikathaPlayer.style.display = "block";
-        conversation.scrollTop = conversation.scrollHeight;
-
-        // --- Clear any previous stop timer ---
-        if (segmentStopTimer) {
-            clearTimeout(segmentStopTimer);
-            segmentStopTimer = null;
+        // 1. Show the question
+        if (queryText) {
+            playerQuestion.textContent = "Q: " + queryText;
+            playerQuestion.style.display = "block";
+        } else {
+            playerQuestion.style.display = "none";
         }
 
-        // --- AUDIO: set source and seek to start ---
-        harikathaAudio.src = result.audio_url;
+        // 2. Show the answer text INSTANTLY
+        const answerText = result.transcript || result.answer_summary || "";
+        if (answerText) {
+            playerAnswer.textContent = answerText;
+            playerAnswer.style.display = "block";
+        } else {
+            playerAnswer.style.display = "none";
+        }
+
+        // 3. Show source title
+        playerTitle.textContent = result.source_title || "Gurudeva's Harikatha";
+
+        // 4. Reset media players fully — remove old timeupdate listeners first
+        _resetAudio();
+        _resetVideo();
+
+        // 5. Show media buttons
+        if (result.audio_url) {
+            btnLoadAudio.style.display = "inline-flex";
+            btnLoadAudio.textContent = "🔊 Listen Audio";
+            btnLoadAudio.style.opacity = "1";
+            btnLoadAudio.disabled = false;
+
+            const videoUrl = result.audio_url.replace('.mp3', '_badger_eng_subs.mp4');
+            btnLoadVideo.style.display = "inline-flex";
+            btnLoadVideo.textContent = "▶ Watch Video";
+            btnLoadVideo.style.opacity = "1";
+            btnLoadVideo.disabled = false;
+
+            btnLoadAudio.dataset.url = result.audio_url;
+            btnLoadAudio.dataset.start = startSec;
+            btnLoadAudio.dataset.end = endSec;
+            btnLoadVideo.dataset.url = videoUrl;
+            btnLoadVideo.dataset.start = startSec;
+            btnLoadVideo.dataset.end = endSec;
+        } else {
+            btnLoadAudio.style.display = "none";
+            btnLoadVideo.style.display = "none";
+        }
+
+        // 6. Show the answer panel
+        harikathaPlayer.style.display = "block";
+        conversation.scrollTop = conversation.scrollHeight;
+        setStatus("connected", "Answer ready — ask another question");
+    }
+
+    // ── Clean reset of audio player ──
+    function _resetAudio() {
+        // Remove any existing timeupdate listener
+        if (audioTimeUpdateHandler) {
+            harikathaAudio.removeEventListener("timeupdate", audioTimeUpdateHandler);
+            audioTimeUpdateHandler = null;
+        }
+        harikathaAudio.pause();
+        harikathaAudio.src = "";
+        harikathaAudio.style.display = "none";
+        visualiserActive = false;
+    }
+
+    // ── Clean reset of video player ──
+    function _resetVideo() {
+        if (videoTimeUpdateHandler) {
+            harikathaVideo.removeEventListener("timeupdate", videoTimeUpdateHandler);
+            videoTimeUpdateHandler = null;
+        }
+        harikathaVideo.pause();
+        harikathaVideo.src = "";
+        harikathaVideo.style.display = "none";
+    }
+
+    // ── Load and play AUDIO on demand ──
+    function loadAndPlayAudio() {
+        const url = btnLoadAudio.dataset.url;
+        const startSec = parseFloat(btnLoadAudio.dataset.start) || 0;
+        const endSec = parseFloat(btnLoadAudio.dataset.end) || 0;
+        if (!url) return;
+
+        // Clean up any previous listener before adding a new one
+        if (audioTimeUpdateHandler) {
+            harikathaAudio.removeEventListener("timeupdate", audioTimeUpdateHandler);
+            audioTimeUpdateHandler = null;
+        }
+
+        harikathaAudio.src = url;
+        harikathaAudio.style.display = "block";
+        btnLoadAudio.textContent = "Loading audio...";
+        btnLoadAudio.disabled = true;
+
         harikathaAudio.onloadedmetadata = () => {
             harikathaAudio.currentTime = startSec;
-            // OLD (auto-play): harikathaAudio.play().then(() => { ... });
-            // NEW: user clicks play manually
+            harikathaAudio.play().catch(() => {});
+            btnLoadAudio.textContent = "🔊 Playing...";
+            btnLoadAudio.disabled = false;
+            visualiserActive = true;
+
+            // Auto-stop at end_seconds — stored so it can be removed later
+            if (endSec > startSec) {
+                audioTimeUpdateHandler = function() {
+                    if (harikathaAudio.currentTime >= endSec) {
+                        harikathaAudio.pause();
+                        harikathaAudio.removeEventListener("timeupdate", audioTimeUpdateHandler);
+                        audioTimeUpdateHandler = null;
+                        visualiserActive = false;
+                        btnLoadAudio.textContent = "🔊 Listen Again";
+                        btnLoadAudio.disabled = false;
+                        setStatus("connected", "Segment finished — ask another question");
+                    }
+                };
+                harikathaAudio.addEventListener("timeupdate", audioTimeUpdateHandler);
+            }
         };
 
-        // --- VIDEO: derive URL from audio URL, show and seek ---
-        var harikathaVideo = document.getElementById("harikathaVideo");
-        var videoUrl = result.audio_url.replace('.mp3', '_badger_eng_subs.mp4');
-        harikathaVideo.src = videoUrl;
-        harikathaVideo.style.display = "block";
-        harikathaVideo.onloadedmetadata = () => {
-            harikathaVideo.currentTime = startSec;
-            // No auto-play — user clicks play manually
+        harikathaAudio.onerror = () => {
+            btnLoadAudio.textContent = "Audio not available";
+            btnLoadAudio.disabled = false;
+            harikathaAudio.style.display = "none";
         };
 
-        // --- When either finishes, update status ---
         harikathaAudio.onended = () => {
             visualiserActive = false;
+            btnLoadAudio.textContent = "🔊 Listen Again";
+            btnLoadAudio.disabled = false;
             setStatus("connected", "Connected — ask another question");
         };
-        harikathaVideo.onended = () => {
-            setStatus("connected", "Connected — ask another question");
+    }
+
+    // ── Load and play VIDEO on demand ──
+    function loadAndPlayVideo() {
+        const url = btnLoadVideo.dataset.url;
+        const startSec = parseFloat(btnLoadVideo.dataset.start) || 0;
+        const endSec = parseFloat(btnLoadVideo.dataset.end) || 0;
+        if (!url) return;
+
+        // Clean up any previous listener before adding a new one
+        if (videoTimeUpdateHandler) {
+            harikathaVideo.removeEventListener("timeupdate", videoTimeUpdateHandler);
+            videoTimeUpdateHandler = null;
+        }
+
+        harikathaVideo.src = url;
+        harikathaVideo.style.display = "block";
+        btnLoadVideo.textContent = "Loading video...";
+        btnLoadVideo.disabled = true;
+
+        harikathaVideo.onloadedmetadata = () => {
+            harikathaVideo.currentTime = startSec;
+            harikathaVideo.play().catch(() => {});
+            btnLoadVideo.textContent = "▶ Playing Video";
+            btnLoadVideo.disabled = false;
+
+            if (endSec > startSec) {
+                videoTimeUpdateHandler = function() {
+                    if (harikathaVideo.currentTime >= endSec) {
+                        harikathaVideo.pause();
+                        harikathaVideo.removeEventListener("timeupdate", videoTimeUpdateHandler);
+                        videoTimeUpdateHandler = null;
+                        btnLoadVideo.textContent = "▶ Watch Again";
+                        btnLoadVideo.disabled = false;
+                        setStatus("connected", "Segment finished — ask another question");
+                    }
+                };
+                harikathaVideo.addEventListener("timeupdate", videoTimeUpdateHandler);
+            }
         };
 
-        // --- Tell user both options are ready ---
-        setStatus("connected", "Press ▶ on Audio or Video to hear Gurudeva");
+        harikathaVideo.onerror = () => {
+            console.warn("Video not available:", url);
+            btnLoadVideo.textContent = "Video not available";
+            btnLoadVideo.style.opacity = "0.4";
+            btnLoadVideo.disabled = false;
+            harikathaVideo.style.display = "none";
+        };
+
+        harikathaVideo.onended = () => {
+            btnLoadVideo.textContent = "▶ Watch Again";
+            btnLoadVideo.disabled = false;
+            setStatus("connected", "Connected — ask another question");
+        };
     }
+
+    // ── Wire up media buttons ──
+    btnLoadAudio.addEventListener("click", loadAndPlayAudio);
+    btnLoadVideo.addEventListener("click", loadAndPlayVideo);
+
+    // ══════════════════════════════════════════════════════════════════
+    // WebSocket callbacks
+    // ══════════════════════════════════════════════════════════════════
 
     // ── Connect / Disconnect ──
     connectBtn.addEventListener("click", () => {
         if (client.isConnected) {
             client.disconnect();
             capture.stop();
-            harikathaAudio.pause();
+            _resetAudio();
+            _resetVideo();
             if (segmentStopTimer) clearTimeout(segmentStopTimer);
             return;
         }
@@ -190,7 +328,6 @@ document.addEventListener("DOMContentLoaded", () => {
         client.connect();
     });
 
-    // ── Callbacks ──
     client.onSetupComplete = () => {
         setStatus("connected", "Connected — ask a question");
         connectBtn.textContent = "Disconnect";
@@ -210,7 +347,8 @@ document.addEventListener("DOMContentLoaded", () => {
         isRecording = false;
         micBtn.classList.remove("recording");
         capture.stop();
-        harikathaAudio.pause();
+        _resetAudio();
+        _resetVideo();
         visualiserActive = false;
         if (animFrame) cancelAnimationFrame(animFrame);
         if (segmentStopTimer) clearTimeout(segmentStopTimer);
@@ -223,9 +361,8 @@ document.addEventListener("DOMContentLoaded", () => {
         connectBtn.classList.remove("connected");
     };
 
-    // Discard Gemini's garbled PCM audio — we only play Gurudeva's MP3
+    // Discard Gemini's garbled PCM audio — we only play Gurudeva's real recordings
     client.onAudio = (base64Data) => {
-        // Intentionally not playing. Visualiser shows activity.
         visualiserActive = true;
     };
 
@@ -236,7 +373,6 @@ document.addEventListener("DOMContentLoaded", () => {
     client.onTurnComplete = () => {
         visualiserActive = false;
 
-        // Filter and show only clean text (no thinking)
         if (agentTextBuffer.trim()) {
             const cleaned = cleanAgentText(agentTextBuffer);
             if (cleaned && cleaned.length > 5) {
@@ -245,40 +381,39 @@ document.addEventListener("DOMContentLoaded", () => {
             agentTextBuffer = "";
         }
 
-        // Play Gurudeva's audio AFTER Gemini is done
-        if (pendingHarikatha) {
-            playHarikathaSegment(pendingHarikatha);
-            pendingHarikatha = null;
-        } else {
-            setStatus("connected", "Connected — ask another question");
-        }
+        setStatus("connected", "Connected — ask another question");
     };
 
     client.onInterrupted = () => {
         agentTextBuffer = "";
         visualiserActive = false;
-        harikathaAudio.pause();
+        _resetAudio();
+        _resetVideo();
         if (segmentStopTimer) clearTimeout(segmentStopTimer);
     };
 
+    // ══════════════════════════════════════════════════════════════════
+    // THE KEY MOMENT: search results arrive → show answer INSTANTLY
+    // ══════════════════════════════════════════════════════════════════
     client.onHarikathaResult = (results, query) => {
         if (!results || results.length === 0) {
             addMessage("system", "No matching harikatha found for: " + query);
-            pendingHarikatha = null;
             return;
         }
 
         const best = results[0];
         const scorePercent = Math.round(best.score * 100);
         addMessage("harikatha-found",
-            `🎙️ Found! (${scorePercent}% match) — "${best.source_title || "Harikatha"}"`
+            `Found! (${scorePercent}% match) — "${best.source_title || "Harikatha"}"`
         );
 
-        // Store — play after Gemini's turn ends
-        pendingHarikatha = best;
+        // INSTANT: show question + text answer + media buttons NOW
+        showAnswerInstantly(best, query);
     };
 
-    // ── Mic (push-to-talk) ──
+    // ══════════════════════════════════════════════════════════════════
+    // Mic (push-to-talk)
+    // ══════════════════════════════════════════════════════════════════
     micBtn.addEventListener("mousedown", startRecording);
     micBtn.addEventListener("mouseup", stopRecording);
     micBtn.addEventListener("mouseleave", stopRecording);
@@ -287,12 +422,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function startRecording() {
         if (!client.isSetupComplete || isRecording) return;
-        harikathaAudio.pause();
+        _resetAudio();
+        _resetVideo();
         if (segmentStopTimer) clearTimeout(segmentStopTimer);
 
         isRecording = true;
         micBtn.classList.add("recording");
-        setStatus("connected", "🎙️ Listening...");
+        setStatus("connected", "Listening... (release to stop)");
 
         capture.onAudioData = (base64Chunk) => {
             client.sendAudio(base64Chunk);
@@ -316,7 +452,9 @@ document.addEventListener("DOMContentLoaded", () => {
         setStatus("connected", "Processing...");
     }
 
-    // ── Text input ──
+    // ══════════════════════════════════════════════════════════════════
+    // Text input
+    // ══════════════════════════════════════════════════════════════════
     sendBtn.addEventListener("click", sendTextQuery);
     textInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -332,7 +470,8 @@ document.addEventListener("DOMContentLoaded", () => {
             addMessage("system", "Please connect first");
             return;
         }
-        harikathaAudio.pause();
+        _resetAudio();
+        _resetVideo();
         if (segmentStopTimer) clearTimeout(segmentStopTimer);
 
         addMessage("user", text);

@@ -1,0 +1,177 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Define gradients for visual enhancement -->
+  <defs>
+    <linearGradient id="saffrronGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5B860;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E8A838;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2A3D5C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A2744;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5B9370;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4A7C59;stop-opacity:1" />
+    </linearGradient>
+    <!-- Shadow filter -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#FDF7EE"/>
+
+  <!-- Title -->
+  <text x="600" y="40" font-size="32" font-weight="bold" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif">
+    Harikatha Live Agent Architecture
+  </text>
+  <text x="600" y="65" font-size="14" text-anchor="middle" fill="#4A7C59" font-family="Arial, sans-serif">
+    Gemini Live API • Harikatha Search • Real-time Audio/Video Streaming
+  </text>
+
+  <!-- Layer 1: Client Side (Top) -->
+  <g filter="url(#shadow)">
+    <rect x="80" y="110" width="280" height="140" rx="12" fill="url(#saffrronGrad)" stroke="#E8A838" stroke-width="2"/>
+    <circle cx="140" cy="155" r="18" fill="#FDF7EE" stroke="#E8A838" stroke-width="2"/>
+    <path d="M 130 150 L 140 145 L 150 150 M 140 145 L 140 160" stroke="#E8A838" stroke-width="2" fill="none"/>
+    <circle cx="220" cy="155" r="18" fill="#FDF7EE" stroke="#E8A838" stroke-width="2"/>
+    <path d="M 210 150 Q 220 140 230 150" stroke="#E8A838" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <text x="200" y="195" font-size="16" font-weight="bold" fill="#1A2744" font-family="Arial, sans-serif">Seeker Browser</text>
+    <text x="200" y="218" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Mic + WebSocket</text>
+    <text x="200" y="235" font-size="11" fill="#5A5A5A" font-family="Arial, sans-serif">/ws/live</text>
+  </g>
+
+  <!-- Layer 2: FastAPI Backend (Middle Left) -->
+  <g filter="url(#shadow)">
+    <rect x="80" y="350" width="280" height="140" rx="12" fill="url(#blueGrad)" stroke="#2A3D5C" stroke-width="2"/>
+    <rect x="105" y="370" width="230" height="28" rx="6" fill="#FDF7EE" fill-opacity="0.2" stroke="#FDF7EE" stroke-width="1"/>
+    <text x="220" y="390" font-size="12" fill="#FDF7EE" font-family="monospace" text-anchor="middle">FastAPI Server</text>
+    <circle cx="140" cy="435" r="10" fill="#F5B860"/>
+    <text x="160" y="440" font-size="12" fill="#FDF7EE" font-family="Arial, sans-serif">WebSocket Handler</text>
+    <circle cx="140" cy="465" r="10" fill="#F5B860"/>
+    <text x="160" y="470" font-size="12" fill="#FDF7EE" font-family="Arial, sans-serif">Orchestrator</text>
+    <text x="220" y="485" font-size="10" fill="#B0B0B0" font-family="Arial, sans-serif">Google Cloud Run</text>
+  </g>
+
+  <!-- Layer 3: Gemini Live API (Center) -->
+  <g filter="url(#shadow)">
+    <rect x="460" y="110" width="280" height="140" rx="12" fill="url(#greenGrad)" stroke="#4A7C59" stroke-width="2"/>
+    <polygon points="550,155 570,145 590,155 575,165" fill="#FDF7EE"/>
+    <path d="M 550 155 L 570 145 L 590 155 L 580 175 L 560 175 Z" stroke="#FDF7EE" stroke-width="1.5" fill="none"/>
+    <text x="600" y="195" font-size="16" font-weight="bold" fill="#FDF7EE" font-family="Arial, sans-serif">Gemini Live API</text>
+    <text x="600" y="218" font-size="12" fill="#FDF7EE" font-family="Arial, sans-serif">Real-time Multimodal AI</text>
+    <text x="600" y="235" font-size="11" fill="#E8E8E8" font-family="Arial, sans-serif">Speech-to-Text • Intent • Functions</text>
+  </g>
+
+  <!-- Layer 4: Search Tool & Firestore (Right) -->
+  <g filter="url(#shadow)">
+    <rect x="840" y="110" width="280" height="140" rx="12" fill="url(#saffrronGrad)" stroke="#E8A838" stroke-width="2"/>
+    <circle cx="900" cy="155" r="20" fill="#FDF7EE" stroke="#E8A838" stroke-width="2"/>
+    <text x="900" y="162" font-size="24" text-anchor="middle" fill="#E8A838" font-family="Arial, sans-serif" font-weight="bold">⚙</text>
+    <text x="960" y="195" font-size="16" font-weight="bold" fill="#1A2744" font-family="Arial, sans-serif">search_harikatha</text>
+    <text x="960" y="218" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Semantic Search Tool</text>
+    <text x="960" y="235" font-size="11" fill="#5A5A5A" font-family="Arial, sans-serif">with Vertex AI Embeddings</text>
+  </g>
+
+  <!-- Layer 5: Data Backend (Bottom) -->
+  <g filter="url(#shadow)">
+    <rect x="460" y="350" width="280" height="140" rx="12" fill="url(#blueGrad)" stroke="#2A3D5C" stroke-width="2"/>
+    <rect x="480" y="370" width="240" height="26" rx="6" fill="#FDF7EE" fill-opacity="0.2" stroke="#FDF7EE" stroke-width="1"/>
+    <text x="600" y="389" font-size="12" fill="#FDF7EE" font-family="monospace" text-anchor="middle">Firestore Vector Search</text>
+    <circle cx="520" cy="435" r="9" fill="#4A7C59"/>
+    <text x="542" y="440" font-size="12" fill="#FDF7EE" font-family="Arial, sans-serif">Audio URLs</text>
+    <circle cx="520" cy="465" r="9" fill="#4A7C59"/>
+    <text x="542" y="470" font-size="12" fill="#FDF7EE" font-family="Arial, sans-serif">Video + Timestamps</text>
+    <circle cx="700" cy="450" r="9" fill="#4A7C59"/>
+    <text x="722" y="455" font-size="12" fill="#FDF7EE" font-family="Arial, sans-serif">Transcript Data</text>
+  </g>
+
+  <!-- Arrows with labels -->
+  <!-- Seeker to FastAPI -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#E8A838" />
+    </marker>
+    <marker id="arrowhead-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2A3D5C" />
+    </marker>
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#4A7C59" />
+    </marker>
+  </defs>
+
+  <!-- Flow arrows -->
+  <!-- Seeker → FastAPI (Voice Input) -->
+  <path d="M 220 250 L 220 350" stroke="#E8A838" stroke-width="3" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,5"/>
+  <rect x="130" y="290" width="180" height="24" rx="4" fill="#FDF7EE" stroke="#E8A838" stroke-width="1"/>
+  <text x="220" y="308" font-size="11" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif" font-weight="bold">User Voice Input (WebSocket)</text>
+
+  <!-- FastAPI → Gemini Live -->
+  <path d="M 360 420 L 460 420" stroke="#2A3D5C" stroke-width="3" fill="none" marker-end="url(#arrowhead-blue)"/>
+  <rect x="370" y="425" width="100" height="20" rx="4" fill="#FDF7EE" stroke="#2A3D5C" stroke-width="1"/>
+  <text x="420" y="438" font-size="10" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif">Forward Audio</text>
+
+  <!-- Gemini Live → Search Tool -->
+  <path d="M 740 180 L 840 180" stroke="#4A7C59" stroke-width="3" fill="none" marker-end="url(#arrowhead-green)"/>
+  <rect x="755" y="160" width="70" height="20" rx="4" fill="#FDF7EE" stroke="#4A7C59" stroke-width="1"/>
+  <text x="790" y="173" font-size="10" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif">Intent</text>
+
+  <!-- Search Tool → Firestore -->
+  <path d="M 980 250 L 600 350" stroke="#E8A838" stroke-width="3" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,5"/>
+  <rect x="750" y="285" width="150" height="24" rx="4" fill="#FDF7EE" stroke="#E8A838" stroke-width="1"/>
+  <text x="825" y="303" font-size="11" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif" font-weight="bold">Vector Semantic Search</text>
+
+  <!-- Firestore → Gemini (Results) -->
+  <path d="M 600 350 L 600 250" stroke="#4A7C59" stroke-width="3" fill="none" marker-end="url(#arrowhead-green)"/>
+  <rect x="520" y="285" width="160" height="24" rx="4" fill="#FDF7EE" stroke="#4A7C59" stroke-width="1"/>
+  <text x="600" y="303" font-size="11" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif" font-weight="bold">Harikatha Content Results</text>
+
+  <!-- Gemini → FastAPI (Processed Response) -->
+  <path d="M 460 180 L 360 420" stroke="#4A7C59" stroke-width="3" fill="none" marker-end="url(#arrowhead-green)" stroke-dasharray="5,5"/>
+  <rect x="350" y="300" width="120" height="24" rx="4" fill="#FDF7EE" stroke="#4A7C59" stroke-width="1"/>
+  <text x="410" y="318" font-size="11" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif" font-weight="bold">Generated Response</text>
+
+  <!-- FastAPI → Seeker (Audio/Video Stream) -->
+  <path d="M 220 350 L 220 250" stroke="#E8A838" stroke-width="3" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,5"/>
+  <rect x="100" y="285" width="240" height="28" rx="4" fill="#FDF7EE" stroke="#E8A838" stroke-width="1"/>
+  <text x="220" y="306" font-size="11" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif" font-weight="bold">Audio/Video URLs + Timestamps</text>
+
+  <!-- Component Details Box -->
+  <g filter="url(#shadow)">
+    <rect x="80" y="570" width="1040" height="190" rx="12" fill="#F9F3E6" stroke="#E8A838" stroke-width="2" stroke-dasharray="4,4"/>
+
+    <text x="100" y="595" font-size="14" font-weight="bold" fill="#1A2744" font-family="Arial, sans-serif">Key Features</text>
+
+    <!-- Left column -->
+    <circle cx="120" cy="625" r="4" fill="#E8A838"/>
+    <text x="135" y="629" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Real-time streaming with WebSocket</text>
+
+    <circle cx="120" cy="655" r="4" fill="#E8A838"/>
+    <text x="135" y="659" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Gemini Live API for low-latency responses</text>
+
+    <circle cx="120" cy="685" r="4" fill="#E8A838"/>
+    <text x="135" y="689" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Semantic search with Vertex AI embeddings</text>
+
+    <circle cx="120" cy="715" r="4" fill="#E8A838"/>
+    <text x="135" y="719" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Playback of Gurudeva's actual voice/video</text>
+
+    <!-- Right column -->
+    <circle cx="560" cy="625" r="4" fill="#4A7C59"/>
+    <text x="575" y="629" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Function calling for tool integration</text>
+
+    <circle cx="560" cy="655" r="4" fill="#4A7C59"/>
+    <text x="575" y="659" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Conversational intent understanding</text>
+
+    <circle cx="560" cy="685" r="4" fill="#4A7C59"/>
+    <text x="575" y="689" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Cloud-native architecture on Google Cloud Run</text>
+
+    <circle cx="560" cy="715" r="4" fill="#4A7C59"/>
+    <text x="575" y="719" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Seamless Harikatha recitation experience</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="785" font-size="11" text-anchor="middle" fill="#888888" font-family="Arial, sans-serif">
+    Gemini Live Agent Challenge 2026 • Hackathon Submission
+  </text>
+</svg>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harikatha Live Agent - Architecture Diagram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1A2744 0%, #2A3D5C 50%, #1A2744 100%);
+            color: #FDF7EE;
+            min-height: 100vh;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #F5B860 0%, #E8A838 50%, #4A7C59 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .tagline {
+            font-size: 1.1em;
+            color: #B0C4DE;
+            margin-bottom: 8px;
+            font-weight: 300;
+        }
+
+        .subtitle {
+            font-size: 0.95em;
+            color: #8A9FB0;
+            letter-spacing: 0.5px;
+        }
+
+        .diagram-wrapper {
+            background: linear-gradient(to bottom, #FDF7EE 0%, #F9F3E6 100%);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(232, 168, 56, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            margin-bottom: 40px;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+            overflow-x: auto;
+        }
+
+        .diagram-wrapper svg {
+            width: 100%;
+            height: auto;
+            display: block;
+            max-width: none;
+        }
+
+        .features-section {
+            margin-top: 40px;
+            animation: fadeIn 0.8s ease-out 0.4s both;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(232, 168, 56, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(232, 168, 56, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card h3 {
+            color: #F5B860;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-card .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #E8A838 0%, #4A7C59 100%);
+            border-radius: 8px;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+
+        .feature-card p {
+            color: #D0D0D0;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .tech-stack {
+            margin-top: 40px;
+            animation: fadeIn 0.8s ease-out 0.6s both;
+        }
+
+        .tech-stack h2 {
+            color: #F5B860;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .tech-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .tech-item {
+            background: rgba(232, 168, 56, 0.1);
+            border-left: 3px solid #E8A838;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            color: #E8E8E8;
+        }
+
+        .tech-item strong {
+            color: #F5B860;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            border-top: 1px solid rgba(232, 168, 56, 0.2);
+            animation: fadeIn 0.8s ease-out 0.8s both;
+        }
+
+        footer p {
+            color: #8A9FB0;
+            font-size: 0.9em;
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            color: #F5B860;
+            font-weight: 600;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .diagram-wrapper {
+                padding: 16px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tech-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .badge {
+            background: rgba(74, 124, 89, 0.2);
+            border: 1px solid rgba(74, 124, 89, 0.4);
+            color: #4A7C59;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .badge.gemini {
+            background: rgba(232, 168, 56, 0.2);
+            border-color: rgba(232, 168, 56, 0.4);
+            color: #F5B860;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Harikatha Live Agent</h1>
+            <p class="tagline">Real-time AI-Powered Sanskrit Recitation with Gemini Live API</p>
+            <p class="subtitle">Gemini Live Agent Challenge 2026 | Hackathon Submission</p>
+            <div class="badges">
+                <span class="badge gemini">Gemini Live API</span>
+                <span class="badge">Semantic Search</span>
+                <span class="badge">Vector Database</span>
+                <span class="badge">Cloud Run</span>
+                <span class="badge">WebSocket Streaming</span>
+            </div>
+        </header>
+
+        <div class="diagram-wrapper">
+            <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+                <!-- Define gradients for visual enhancement -->
+                <defs>
+                    <linearGradient id="saffrronGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#F5B860;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#E8A838;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#2A3D5C;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#1A2744;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#5B9370;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#4A7C59;stop-opacity:1" />
+                    </linearGradient>
+                    <!-- Shadow filter -->
+                    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feDropShadow dx="2" dy="4" stdDeviation="4" flood-opacity="0.15"/>
+                    </filter>
+                </defs>
+
+                <!-- Background -->
+                <rect width="1200" height="800" fill="#FDF7EE"/>
+
+                <!-- Title -->
+                <text x="600" y="40" font-size="32" font-weight="bold" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif">
+                    Harikatha Live Agent Architecture
+                </text>
+                <text x="600" y="65" font-size="14" text-anchor="middle" fill="#4A7C59" font-family="Arial, sans-serif">
+                    Gemini Live API • Harikatha Search • Real-time Audio/Video Streaming
+                </text>
+
+                <!-- Layer 1: Client Side (Top) -->
+                <g filter="url(#shadow)">
+                    <rect x="80" y="110" width="280" height="140" rx="12" fill="url(#saffrronGrad)" stroke="#E8A838" stroke-width="2"/>
+                    <circle cx="140" cy="155" r="18" fill="#FDF7EE" stroke="#E8A838" stroke-width="2"/>
+                    <path d="M 130 150 L 140 145 L 150 150 M 140 145 L 140 160" stroke="#E8A838" stroke-width="2" fill="none"/>
+                    <circle cx="220" cy="155" r="18" fill="#FDF7EE" stroke="#E8A838" stroke-width="2"/>
+                    <path d="M 210 150 Q 220 140 230 150" stroke="#E8A838" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                    <text x="200" y="195" font-size="16" font-weight="bold" fill="#1A2744" font-family="Arial, sans-serif">Seeker Browser</text>
+                    <text x="200" y="218" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Mic + WebSocket</text>
+                    <text x="200" y="235" font-size="11" fill="#5A5A5A" font-family="Arial, sans-serif">/ws/live</text>
+                </g>
+
+                <!-- Layer 2: FastAPI Backend (Middle Left) -->
+                <g filter="url(#shadow)">
+                    <rect x="80" y="350" width="280" height="140" rx="12" fill="url(#blueGrad)" stroke="#2A3D5C" stroke-width="2"/>
+                    <rect x="105" y="370" width="230" height="28" rx="6" fill="#FDF7EE" fill-opacity="0.2" stroke="#FDF7EE" stroke-width="1"/>
+                    <text x="220" y="390" font-size="12" fill="#FDF7EE" font-family="monospace" text-anchor="middle">FastAPI Server</text>
+                    <circle cx="140" cy="435" r="10" fill="#F5B860"/>
+                    <text x="160" y="440" font-size="12" fill="#FDF7EE" font-family="Arial, sans-serif">WebSocket Handler</text>
+                    <circle cx="140" cy="465" r="10" fill="#F5B860"/>
+                    <text x="160" y="470" font-size="12" fill="#FDF7EE" font-family="Arial, sans-serif">Orchestrator</text>
+                    <text x="220" y="485" font-size="10" fill="#B0B0B0" font-family="Arial, sans-serif">Google Cloud Run</text>
+                </g>
+
+                <!-- Layer 3: Gemini Live API (Center) -->
+                <g filter="url(#shadow)">
+                    <rect x="460" y="110" width="280" height="140" rx="12" fill="url(#greenGrad)" stroke="#4A7C59" stroke-width="2"/>
+                    <polygon points="550,155 570,145 590,155 575,165" fill="#FDF7EE"/>
+                    <path d="M 550 155 L 570 145 L 590 155 L 580 175 L 560 175 Z" stroke="#FDF7EE" stroke-width="1.5" fill="none"/>
+                    <text x="600" y="195" font-size="16" font-weight="bold" fill="#FDF7EE" font-family="Arial, sans-serif">Gemini Live API</text>
+                    <text x="600" y="218" font-size="12" fill="#FDF7EE" font-family="Arial, sans-serif">Real-time Multimodal AI</text>
+                    <text x="600" y="235" font-size="11" fill="#E8E8E8" font-family="Arial, sans-serif">Speech-to-Text • Intent • Functions</text>
+                </g>
+
+                <!-- Layer 4: Search Tool & Firestore (Right) -->
+                <g filter="url(#shadow)">
+                    <rect x="840" y="110" width="280" height="140" rx="12" fill="url(#saffrronGrad)" stroke="#E8A838" stroke-width="2"/>
+                    <circle cx="900" cy="155" r="20" fill="#FDF7EE" stroke="#E8A838" stroke-width="2"/>
+                    <text x="900" y="162" font-size="24" text-anchor="middle" fill="#E8A838" font-family="Arial, sans-serif" font-weight="bold">⚙</text>
+                    <text x="960" y="195" font-size="16" font-weight="bold" fill="#1A2744" font-family="Arial, sans-serif">search_harikatha</text>
+                    <text x="960" y="218" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Semantic Search Tool</text>
+                    <text x="960" y="235" font-size="11" fill="#5A5A5A" font-family="Arial, sans-serif">with Vertex AI Embeddings</text>
+                </g>
+
+                <!-- Layer 5: Data Backend (Bottom) -->
+                <g filter="url(#shadow)">
+                    <rect x="460" y="350" width="280" height="140" rx="12" fill="url(#blueGrad)" stroke="#2A3D5C" stroke-width="2"/>
+                    <rect x="480" y="370" width="240" height="26" rx="6" fill="#FDF7EE" fill-opacity="0.2" stroke="#FDF7EE" stroke-width="1"/>
+                    <text x="600" y="389" font-size="12" fill="#FDF7EE" font-family="monospace" text-anchor="middle">Firestore Vector Search</text>
+                    <circle cx="520" cy="435" r="9" fill="#4A7C59"/>
+                    <text x="542" y="440" font-size="12" fill="#FDF7EE" font-family="Arial, sans-serif">Audio URLs</text>
+                    <circle cx="520" cy="465" r="9" fill="#4A7C59"/>
+                    <text x="542" y="470" font-size="12" fill="#FDF7EE" font-family="Arial, sans-serif">Video + Timestamps</text>
+                    <circle cx="700" cy="450" r="9" fill="#4A7C59"/>
+                    <text x="722" y="455" font-size="12" fill="#FDF7EE" font-family="Arial, sans-serif">Transcript Data</text>
+                </g>
+
+                <!-- Arrows with labels -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#E8A838" />
+                    </marker>
+                    <marker id="arrowhead-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#2A3D5C" />
+                    </marker>
+                    <marker id="arrowhead-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#4A7C59" />
+                    </marker>
+                </defs>
+
+                <!-- Flow arrows -->
+                <!-- Seeker → FastAPI (Voice Input) -->
+                <path d="M 220 250 L 220 350" stroke="#E8A838" stroke-width="3" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,5"/>
+                <rect x="130" y="290" width="180" height="24" rx="4" fill="#FDF7EE" stroke="#E8A838" stroke-width="1"/>
+                <text x="220" y="308" font-size="11" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif" font-weight="bold">User Voice Input (WebSocket)</text>
+
+                <!-- FastAPI → Gemini Live -->
+                <path d="M 360 420 L 460 420" stroke="#2A3D5C" stroke-width="3" fill="none" marker-end="url(#arrowhead-blue)"/>
+                <rect x="370" y="425" width="100" height="20" rx="4" fill="#FDF7EE" stroke="#2A3D5C" stroke-width="1"/>
+                <text x="420" y="438" font-size="10" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif">Forward Audio</text>
+
+                <!-- Gemini Live → Search Tool -->
+                <path d="M 740 180 L 840 180" stroke="#4A7C59" stroke-width="3" fill="none" marker-end="url(#arrowhead-green)"/>
+                <rect x="755" y="160" width="70" height="20" rx="4" fill="#FDF7EE" stroke="#4A7C59" stroke-width="1"/>
+                <text x="790" y="173" font-size="10" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif">Intent</text>
+
+                <!-- Search Tool → Firestore -->
+                <path d="M 980 250 L 600 350" stroke="#E8A838" stroke-width="3" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,5"/>
+                <rect x="750" y="285" width="150" height="24" rx="4" fill="#FDF7EE" stroke="#E8A838" stroke-width="1"/>
+                <text x="825" y="303" font-size="11" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif" font-weight="bold">Vector Semantic Search</text>
+
+                <!-- Firestore → Gemini (Results) -->
+                <path d="M 600 350 L 600 250" stroke="#4A7C59" stroke-width="3" fill="none" marker-end="url(#arrowhead-green)"/>
+                <rect x="520" y="285" width="160" height="24" rx="4" fill="#FDF7EE" stroke="#4A7C59" stroke-width="1"/>
+                <text x="600" y="303" font-size="11" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif" font-weight="bold">Harikatha Content Results</text>
+
+                <!-- Gemini → FastAPI (Processed Response) -->
+                <path d="M 460 180 L 360 420" stroke="#4A7C59" stroke-width="3" fill="none" marker-end="url(#arrowhead-green)" stroke-dasharray="5,5"/>
+                <rect x="350" y="300" width="120" height="24" rx="4" fill="#FDF7EE" stroke="#4A7C59" stroke-width="1"/>
+                <text x="410" y="318" font-size="11" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif" font-weight="bold">Generated Response</text>
+
+                <!-- FastAPI → Seeker (Audio/Video Stream) -->
+                <path d="M 220 350 L 220 250" stroke="#E8A838" stroke-width="3" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,5"/>
+                <rect x="100" y="285" width="240" height="28" rx="4" fill="#FDF7EE" stroke="#E8A838" stroke-width="1"/>
+                <text x="220" y="306" font-size="11" text-anchor="middle" fill="#1A2744" font-family="Arial, sans-serif" font-weight="bold">Audio/Video URLs + Timestamps</text>
+
+                <!-- Component Details Box -->
+                <g filter="url(#shadow)">
+                    <rect x="80" y="570" width="1040" height="190" rx="12" fill="#F9F3E6" stroke="#E8A838" stroke-width="2" stroke-dasharray="4,4"/>
+
+                    <text x="100" y="595" font-size="14" font-weight="bold" fill="#1A2744" font-family="Arial, sans-serif">Key Features</text>
+
+                    <!-- Left column -->
+                    <circle cx="120" cy="625" r="4" fill="#E8A838"/>
+                    <text x="135" y="629" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Real-time streaming with WebSocket</text>
+
+                    <circle cx="120" cy="655" r="4" fill="#E8A838"/>
+                    <text x="135" y="659" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Gemini Live API for low-latency responses</text>
+
+                    <circle cx="120" cy="685" r="4" fill="#E8A838"/>
+                    <text x="135" y="689" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Semantic search with Vertex AI embeddings</text>
+
+                    <circle cx="120" cy="715" r="4" fill="#E8A838"/>
+                    <text x="135" y="719" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Playback of Gurudeva's actual voice/video</text>
+
+                    <!-- Right column -->
+                    <circle cx="560" cy="625" r="4" fill="#4A7C59"/>
+                    <text x="575" y="629" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Function calling for tool integration</text>
+
+                    <circle cx="560" cy="655" r="4" fill="#4A7C59"/>
+                    <text x="575" y="659" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Conversational intent understanding</text>
+
+                    <circle cx="560" cy="685" r="4" fill="#4A7C59"/>
+                    <text x="575" y="689" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Cloud-native architecture on Google Cloud Run</text>
+
+                    <circle cx="560" cy="715" r="4" fill="#4A7C59"/>
+                    <text x="575" y="719" font-size="12" fill="#1A2744" font-family="Arial, sans-serif">Seamless Harikatha recitation experience</text>
+                </g>
+
+                <!-- Footer -->
+                <text x="600" y="785" font-size="11" text-anchor="middle" fill="#888888" font-family="Arial, sans-serif">
+                    Gemini Live Agent Challenge 2026 • Hackathon Submission
+                </text>
+            </svg>
+        </div>
+
+        <section class="features-section">
+            <h2 style="color: #F5B860; font-size: 1.5em; margin-bottom: 20px;">System Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3><span class="icon">🎤</span> Real-time Speech Processing</h3>
+                    <p>WebSocket-based streaming integration with Gemini Live API for instantaneous speech-to-text conversion and intent understanding without perceptible latency.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3><span class="icon">🔍</span> Semantic Search</h3>
+                    <p>Vertex AI embeddings power intelligent vector search across Harikatha texts, enabling contextual retrieval of relevant Sanskrit recitations and spiritual wisdom.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3><span class="icon">⚡</span> Low-Latency Architecture</h3>
+                    <p>Google Cloud Run's serverless platform ensures rapid response times with automatic scaling, optimized for real-time conversational AI experiences.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3><span class="icon">🎬</span> Multi-modal Output</h3>
+                    <p>Seamlessly combine generated responses with authentic audio and video playback of Gurudeva's actual Harikatha recitations, timestamps, and transcripts.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3><span class="icon">🔧</span> Function Calling</h3>
+                    <p>Gemini Live API's native function calling enables the search_harikatha tool to integrate directly into the conversational flow for intelligent tool use.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3><span class="icon">🌍</span> Scalable Data Backend</h3>
+                    <p>Firestore's globally distributed vector database handles millions of embeddings, ensuring fast retrieval and consistent performance worldwide.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="tech-stack">
+            <h2>Technology Stack</h2>
+            <div class="tech-list">
+                <div class="tech-item"><strong>Frontend:</strong> React/TypeScript with WebSocket client</div>
+                <div class="tech-item"><strong>Backend:</strong> FastAPI (Python) on Google Cloud Run</div>
+                <div class="tech-item"><strong>AI/ML:</strong> Google Gemini Live API</div>
+                <div class="tech-item"><strong>Embeddings:</strong> Vertex AI Text Embeddings</div>
+                <div class="tech-item"><strong>Database:</strong> Firestore Vector Search</div>
+                <div class="tech-item"><strong>Audio/Video:</strong> Cloud Storage + Streaming</div>
+                <div class="tech-item"><strong>Infrastructure:</strong> Google Cloud Platform</div>
+                <div class="tech-item"><strong>Protocol:</strong> WebSocket for real-time streaming</div>
+            </div>
+        </section>
+
+        <footer>
+            <p><span class="highlight">Harikatha Live Agent</span> brings the timeless wisdom of Sanskrit Harikatha to modern seekers through AI-powered conversational interfaces and real-time multimedia experiences.</p>
+            <p>Built for the <span class="highlight">Gemini Live Agent Challenge 2026</span> | Demonstrating advanced capabilities of Gemini Live API in spiritual and educational domains</p>
+            <p style="margin-top: 20px; font-size: 0.85em;">Architecture designed for scalability, low latency, and seamless user experience</p>
+        </footer>
+    </div>
+</body>
+</html>

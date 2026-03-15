@@ -13,7 +13,6 @@
 
     <!-- ── Analytics & Tracking ── -->
 
-    <!-- Inspectlet: session recording, heatmaps -->
     <script type="text/javascript">
     (function() {
     window.__insp = window.__insp || [];
@@ -24,7 +23,6 @@
     })();
     </script>
 
-    <!-- Google Analytics: page views, user engagement -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-BDVLKP8XSZ"></script>
     <script>
     window.dataLayer = window.dataLayer || [];
@@ -33,7 +31,6 @@
     gtag('config', 'G-BDVLKP8XSZ');
     </script>
 
-    <!-- Microsoft Clarity: session recording, heatmaps -->
     <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
     c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -41,6 +38,7 @@
     y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window,document,"clarity","script","vv04jazml9");
     </script>
+
 
 </head>
 <body>
@@ -75,17 +73,23 @@
             </div>
         </div>
 
-        <!-- ── Harikatha audio player (shows when segment found) ── -->
+        <!-- ── Harikatha answer (shows when segment found) ── -->
         <div class="harikatha-player" id="harikathaPlayer" style="display:none;">
-            <div class="player-header">
-                <span class="player-icon">🎙️</span>
-                <span class="player-label">Gurudeva's Harikatha</span>
-            </div>
+            <!-- Question that was asked -->
+            <div class="player-question" id="playerQuestion" style="display:none;"></div>
+            <!-- Answer text — appears INSTANTLY -->
+            <div class="player-answer" id="playerAnswer" style="display:none;"></div>
+            <!-- Source title -->
             <div class="player-title" id="playerTitle"></div>
-            <audio id="harikathaAudio" controls></audio>
-            <!-- VIDEO: same content, user can choose to watch instead of listen -->
-            <video id="harikathaVideo" controls playsinline style="display:none; width:100%; margin-top:8px;"></video>
-            <div class="player-transcript" id="playerTranscript"></div>
+            <!-- Media buttons — user chooses what to load -->
+            <div class="player-media-buttons" id="mediaButtons">
+                <button class="media-btn media-btn-video" id="btnLoadVideo" style="display:none;">▶ Watch Video</button>
+                <button class="media-btn media-btn-audio" id="btnLoadAudio" style="display:none;">🔊 Listen Audio</button>
+            </div>
+            <!-- VIDEO player (hidden until user clicks) -->
+            <video id="harikathaVideo" controls playsinline style="display:none; width:100%; margin-bottom:8px;"></video>
+            <!-- AUDIO player (hidden until user clicks) -->
+            <audio id="harikathaAudio" controls style="display:none;"></audio>
         </div>
 
         <!-- ── Controls ── -->
