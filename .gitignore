@@ -49,6 +49,4 @@ migrate-session2.ps1
 PROJECT-STATUS.md
 HOW-TO-RUN-HARIKATHA.txt
 
-# Large media in frontend (served locally, too big for git)
-frontend/*.mp3
-frontend/*.mp4
+
