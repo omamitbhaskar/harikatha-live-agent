@@ -211,8 +211,8 @@ Each harikatha recording is indexed as JSON with segments and QA pairs:
 
 - **Track:** Live Agent
 - **Category:** Real-time Interaction (Audio/Vision)
-- **Demo Video:** [YouTube link TBD]
-- **Blog Post:** [link TBD] `#GeminiLiveAgentChallenge`
+- **Demo Video:** https://youtu.be/8PIamHBNeNQ
+- **Blog Post:** https://dev.to/amitbhaskar/building-the-harikatha-live-agent-a-spiritual-qa-system-with-real-voice-41l7 `#GeminiLiveAgentChallenge`
 
 ---
 
